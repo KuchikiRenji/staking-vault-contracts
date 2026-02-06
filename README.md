@@ -1,33 +1,84 @@
-# Yaroslav Staking Vault
+# Yaroslav Staking Vault – Ethereum DeFi Staking Smart Contracts
 
-A production-quality staking vault for the Yaroslav (YARO) token with rewards in Yaroslav Reward Token (rYARO). Built with Hardhat, TypeScript, and Next.js.
+**Production-ready Ethereum staking vault** for the Yaroslav (YARO) token with rewards in Yaroslav Reward Token (rYARO). Stake YARO, earn rYARO. Built with Solidity, Hardhat, TypeScript, and Next.js.
 
-## Overview
+[![Solidity](https://img.shields.io/badge/Solidity-^0.8.20-blue)](https://soliditylang.org/)
+[![Hardhat](https://img.shields.io/badge/Hardhat-2.19-yellow)](https://hardhat.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-This project implements a complete staking system where users can:
-- Stake YARO tokens
-- Earn rYARO rewards based on a configurable reward rate
-- Withdraw staked tokens and claim rewards
-- Access an admin panel for vault management (owner-only)
+---
+
+## Author & Contact
+
+| | |
+|---|---|
+| **Author** | **KuchikiRenji** |
+| **Email** | [KuchikiRenji@outlook.com](mailto:KuchikiRenji@outlook.com) |
+| **GitHub** | [github.com/KuchikiRenji](https://github.com/KuchikiRenji) |
+| **Discord** | `kuchiki_renji` |
+
+For questions, collaboration, or support, reach out via email or Discord.
+
+---
+
+## Table of Contents
+
+- [What Is This Project?](#what-is-this-project)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Quick Start](#quick-start)
+- [Installation](#installation)
+- [Development](#development)
+- [Deployment](#deployment)
+- [Frontend](#frontend)
+- [Testing](#testing)
+- [Gas Optimization](#gas-optimization)
+- [Security](#security)
+- [Architecture & Docs](#architecture--docs)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## What Is This Project?
+
+**Yaroslav Staking Vault** is a **DeFi staking protocol** on Ethereum that lets users:
+
+- **Stake** YARO (ERC-20) tokens in a secure vault
+- **Earn** rYARO rewards from a configurable reward rate (accumulator-based, gas-efficient)
+- **Withdraw** staked tokens and **claim** rewards anytime
+- Use an **admin panel** (owner-only) for vault management: reward rate, funding, pause
+
+The smart contracts use **OpenZeppelin** (ReentrancyGuard, Pausable, Ownable, SafeERC20), include a full **test suite** with high coverage, and ship with a **Next.js + Wagmi** frontend for Sepolia testnet.
+
+---
 
 ## Features
 
-- ✅ ERC-20 staking token (YARO) and reward token (rYARO)
-- ✅ Initial token distribution on deployment (deployer, treasury, liquidity pool)
-- ✅ Efficient reward distribution using accumulator pattern
-- ✅ ReentrancyGuard, Pausable, and Ownable security features
-- ✅ Comprehensive test suite with >90% coverage
-- ✅ Next.js front-end with Wagmi integration
-- ✅ Deployment scripts for Sepolia testnet
-- ✅ Gas-optimized contract design
+- **ERC-20 staking & reward tokens**: YARO (stake) and rYARO (rewards)
+- **Initial token distribution** on deploy (deployer, treasury, liquidity pool)
+- **Efficient reward math** via accumulator pattern (MasterChef-style)
+- **Security**: ReentrancyGuard, Pausable, Ownable, SafeERC20
+- **Tests**: Comprehensive suite, >90% coverage
+- **Frontend**: Next.js app with Wagmi; also a `dapp/` with RainbowKit
+- **Deployment**: Scripts for Sepolia; optional Etherscan verification
+- **Gas-optimized** design and minimal storage writes
+
+---
 
 ## Tech Stack
 
-- **Smart Contracts**: Solidity ^0.8.20, OpenZeppelin Contracts
-- **Development**: Hardhat, TypeScript, Ethers v6
-- **Testing**: Mocha, Chai, Hardhat Network Helpers
-- **Frontend**: Next.js 14, React, Wagmi, Viem
-- **Linting**: ESLint, Prettier
+| Layer | Technology |
+|-------|------------|
+| **Smart contracts** | Solidity ^0.8.20, OpenZeppelin Contracts |
+| **Dev & build** | Hardhat, TypeScript, Ethers v6 |
+| **Testing** | Mocha, Chai, Hardhat Network Helpers |
+| **Frontend** | Next.js 14, React, Wagmi, Viem (and dapp: RainbowKit) |
+| **Code quality** | ESLint, Prettier |
+
+---
 
 ## Project Structure
 
@@ -36,284 +87,259 @@ staking-vault-contracts/
 ├── contracts/
 │   ├── Yaroslav.sol              # Staking token (YARO)
 │   ├── rYaroslav.sol             # Reward token (rYARO)
-│   └── YaroslavStakingVault.sol  # Main staking contract
+│   └── YaroslavStakingVault.sol  # Main staking vault
 ├── scripts/
-│   ├── deploy.ts                 # Deployment script
-│   └── fundRewards.ts            # Helper to fund vault
+│   ├── deploy.ts                 # Deploy YARO, rYARO, vault
+│   ├── fundRewards.ts            # Fund vault with rYARO
+│   └── verify.ts                 # Contract verification
 ├── test/
-│   ├── staking.test.ts           # Main test suite
+│   ├── staking.test.ts           # Staking & vault tests
 │   └── reward-model.test.ts      # Reward calculation tests
-├── frontend/
-│   ├── pages/
-│   │   ├── index.tsx             # Staking dashboard
-│   │   └── admin.tsx              # Admin panel
-│   └── components/
-│       ├── WalletConnect.tsx
-│       └── StakingCard.tsx
+├── frontend/                     # Next.js staking UI (Wagmi)
+│   ├── pages/                    # index, admin
+│   └── components/               # WalletConnect, StakingCard
+├── dapp/                         # Next.js 14 + RainbowKit DApp
+│   ├── app/                      # App Router, dashboard
+│   └── components/               # ConnectWallet, StakingCard, RewardsCard
 ├── docs/
-│   ├── architecture.md           # System architecture
-│   └── security.md                # Security considerations
-└── hardhat.config.ts
+│   ├── architecture.md           # System & contract design
+│   ├── security.md               # Security considerations
+│   └── token-distribution.md     # Token distribution guide
+├── hardhat.config.ts
+├── package.json
+└── README.md
 ```
 
-## Setup & Installation
+---
+
+## Quick Start
+
+```bash
+git clone https://github.com/KuchikiRenji/staking-vault-contracts.git
+cd staking-vault-contracts
+npm install
+cp env.example .env
+# Edit .env with SEPOLIA_RPC_URL, DEPLOYER_PRIVATE_KEY, etc.
+npm run compile
+npm run test
+npx hardhat run scripts/deploy.ts --network sepolia
+```
+
+Then run the frontend (see [Frontend](#frontend)).
+
+---
+
+## Installation
 
 ### Prerequisites
 
-- Node.js >= 20
-- npm or yarn
-- An Ethereum wallet with Sepolia ETH (for deployment)
+- **Node.js** ≥ 20
+- **npm** or yarn
+- **Ethereum wallet** with Sepolia ETH (for deployment)
 
-### Installation
+### Steps
 
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd staking-vault-contracts
-```
+1. **Clone the repo**
+   ```bash
+   git clone https://github.com/KuchikiRenji/staking-vault-contracts.git
+   cd staking-vault-contracts
+   ```
 
-2. Install dependencies:
-```bash
-npm install
-```
+2. **Install root dependencies**
+   ```bash
+   npm install
+   ```
 
-3. Install frontend dependencies:
-```bash
-cd frontend
-npm install
-cd ..
-```
+3. **Install frontend dependencies** (if using `frontend/` or `dapp/`)
+   ```bash
+   cd frontend && npm install && cd ..
+   # and/or: cd dapp && npm install && cd ..
+   ```
 
-4. Create `.env` file (copy from `.env.example`):
-```bash
-cp .env.example .env
-```
+4. **Environment**
+   ```bash
+   cp env.example .env
+   ```
+   Fill `.env`:
+   ```env
+   SEPOLIA_RPC_URL=https://sepolia.infura.io/v3/YOUR_INFURA_KEY
+   DEPLOYER_PRIVATE_KEY=your_private_key_here
+   ETHERSCAN_API_KEY=your_etherscan_api_key_here
+   NEXT_PUBLIC_RPC_URL=https://sepolia.infura.io/v3/YOUR_INFURA_KEY
+   NEXT_PUBLIC_CONTRACT_ADDRESSES='{"Yaroslav":"0x...","rYaroslav":"0x...","YaroslavStakingVault":"0x..."}'
+   ```
+   Use the addresses printed after deployment for `NEXT_PUBLIC_CONTRACT_ADDRESSES`.
 
-5. Fill in your `.env` file:
-```env
-SEPOLIA_RPC_URL=https://sepolia.infura.io/v3/YOUR_INFURA_KEY
-DEPLOYER_PRIVATE_KEY=your_private_key_here
-ETHERSCAN_API_KEY=your_etherscan_api_key_here  # Optional
-NEXT_PUBLIC_RPC_URL=https://sepolia.infura.io/v3/YOUR_INFURA_KEY
-NEXT_PUBLIC_CONTRACT_ADDRESSES='{"Yaroslav":"0x...","rYaroslav":"0x...","YaroslavStakingVault":"0x..."}'
-```
+---
 
 ## Development
 
-### Compile Contracts
+### Compile contracts
 
 ```bash
 npm run compile
 ```
 
-### Run Tests
+### Run tests
 
 ```bash
 npm run test
 ```
 
-### Run Tests with Coverage
+### Test coverage
 
 ```bash
 npm run coverage
 ```
+Target: **≥90% coverage**.
 
-### Generate Gas Report
+### Gas report
 
 ```bash
 REPORT_GAS=true npm run test
 ```
+Output is written to `gas-report.txt` when the gas reporter is enabled.
+
+---
 
 ## Deployment
 
 ### Deploy to Sepolia
 
-1. Ensure your `.env` file has `SEPOLIA_RPC_URL` and `DEPLOYER_PRIVATE_KEY` set
-2. Make sure your deployer wallet has Sepolia ETH for gas
-3. (Optional) Set `TREASURY_ADDRESS` and `LIQUIDITY_POOL_ADDRESS` for custom distribution
+1. Set `SEPOLIA_RPC_URL` and `DEPLOYER_PRIVATE_KEY` in `.env`.
+2. Ensure the deployer wallet has Sepolia ETH.
+3. Optional: set `TREASURY_ADDRESS` and `LIQUIDITY_POOL_ADDRESS` for custom distribution.
 
-4. Deploy contracts:
-```bash
-npx hardhat run scripts/deploy.ts --network sepolia
-```
+4. Deploy:
+   ```bash
+   npx hardhat run scripts/deploy.ts --network sepolia
+   ```
+   The script deploys YARO (1B supply: 40% deployer, 30% treasury, 30% liquidity), rYARO (100M: 50% deployer, 50% treasury), and **YaroslavStakingVault**, then prints addresses and a ready-to-use `NEXT_PUBLIC_CONTRACT_ADDRESSES` line.
 
-The script will:
-- Deploy YARO token with initial distribution (1B tokens: 40% deployer, 30% treasury, 30% liquidity)
-- Deploy rYARO token with initial distribution (100M tokens: 50% deployer, 50% treasury)
-- Deploy YaroslavStakingVault
-- Print all contract addresses and distribution details
-- Optionally verify contracts on Etherscan (if `ETHERSCAN_API_KEY` is set)
+5. **Fund the vault** with rYARO:
+   ```bash
+   RYAROSLAV_ADDRESS=0x... VAULT_ADDRESS=0x... npx hardhat run scripts/fundRewards.ts --network sepolia
+   ```
 
-**Note**: See [docs/token-distribution.md](./docs/token-distribution.md) for details on customizing the distribution.
+6. **Frontend**: Copy the printed contract addresses into `frontend/.env.local` or `dapp/.env.local` as `NEXT_PUBLIC_CONTRACT_ADDRESSES` and `NEXT_PUBLIC_RPC_URL`.
 
-4. Fund the vault with rewards:
-```bash
-# Set addresses in .env or modify fundRewards.ts
-RYAROSLAV_ADDRESS=0x... VAULT_ADDRESS=0x... npx hardhat run scripts/fundRewards.ts --network sepolia
-```
+Details: [docs/token-distribution.md](./docs/token-distribution.md).
 
-5. Update frontend `.env`:
-   - Copy the contract addresses from deployment output
-   - Update `NEXT_PUBLIC_CONTRACT_ADDRESSES` in `frontend/.env.local`
+### Verify on Etherscan
 
-### Verify Contracts on Etherscan
+If `ETHERSCAN_API_KEY` is set, the deploy script can verify contracts automatically. For manual verification:
 
-If you set `ETHERSCAN_API_KEY` in `.env`, contracts will be automatically verified after deployment.
-
-Manual verification:
 ```bash
 npx hardhat verify --network sepolia <CONTRACT_ADDRESS> <CONSTRUCTOR_ARGS>
 ```
 
-Example:
-```bash
-npx hardhat verify --network sepolia 0x... 0x... 0x... 0x...
-```
+---
 
 ## Frontend
 
-### Run Frontend Locally
+### Run locally (`frontend/`)
 
-1. Navigate to frontend directory:
 ```bash
 cd frontend
+# Create .env.local with NEXT_PUBLIC_RPC_URL and NEXT_PUBLIC_CONTRACT_ADDRESSES
+npm run dev
 ```
+Open [http://localhost:3000](http://localhost:3000).
 
-2. Create `.env.local`:
-```env
-NEXT_PUBLIC_RPC_URL=https://sepolia.infura.io/v3/YOUR_INFURA_KEY
-NEXT_PUBLIC_CONTRACT_ADDRESSES='{"Yaroslav":"0x...","rYaroslav":"0x...","YaroslavStakingVault":"0x..."}'
-```
+### Run DApp (`dapp/`)
 
-3. Start development server:
 ```bash
+cd dapp
+# Create .env.local (see dapp/README.md for variables)
 npm run dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000)
+### Features
 
-### Frontend Features
+- **Dashboard**: Connect wallet, view staked balance and pending rewards, deposit / withdraw / claim.
+- **Admin**: Set reward rate, fund rewards (owner only).
 
-- **Dashboard**: Connect wallet, view staked balance, pending rewards, deposit/withdraw/claim
-- **Admin Panel**: Set reward rate, fund rewards (owner-only)
+### Deploy to Vercel
 
-### Deploy Frontend to Vercel
+Push to GitHub, import the repo in Vercel, add the same env vars, and deploy. See `dapp/VERCEL_DEPLOYMENT.md` for details.
 
-1. Push code to GitHub
-2. Import project in Vercel
-3. Add environment variables in Vercel dashboard
-4. Deploy
+---
 
-## Testing Guide
+## Testing
 
-### Local Testing
+- **Unit tests**: `npm run test` — deposit, withdraw, claim, reward math, admin, pause, edge cases.
+- **Coverage**: `npm run coverage` — aim for ≥90%.
 
-1. **Mint Test Tokens**:
-   - After deployment, use the owner account to mint YARO tokens to test users
-   - Example: `npx hardhat run scripts/mintTokens.ts --network sepolia` (create this script if needed)
+**Manual flow**: Deploy to Sepolia → mint YARO to a test wallet → connect in the frontend → approve → deposit → wait → claim → withdraw.
 
-2. **Test Staking Flow**:
-   - Connect wallet in frontend
-   - Approve YARO tokens
-   - Deposit tokens
-   - Wait for rewards to accumulate
-   - Claim rewards
-   - Withdraw tokens
-
-### Test Coverage
-
-The test suite covers:
-- ✅ Deposit/withdraw/claim functionality
-- ✅ Reward calculations
-- ✅ Admin functions
-- ✅ Paused state behavior
-- ✅ Multiple users
-- ✅ Edge cases (zero amounts, full withdraw, etc.)
-- ✅ Reward rate changes
-
-Run coverage:
-```bash
-npm run coverage
-```
-
-Target: **≥90% coverage** ✅
+---
 
 ## Gas Optimization
 
-Key gas optimizations implemented:
-- Minimal storage writes (update accumulator only when needed)
-- Efficient reward calculation pattern
-- Batch operations (auto-claim on deposit/withdraw)
+- Accumulator updated only when needed.
+- Single reward calculation pattern; auto-claim on deposit/withdraw to avoid extra claims.
+- Run `REPORT_GAS=true npm run test` for a gas report.
 
-Gas report available in `gas-report.txt` after running tests with `REPORT_GAS=true`.
+---
 
 ## Security
 
-See [docs/security.md](./docs/security.md) for detailed security considerations.
+See [docs/security.md](./docs/security.md) for full details.
 
-Key security features:
-- ReentrancyGuard on all state-changing functions
-- Pausable for emergency stops
-- Ownable for access control
-- SafeERC20 for token transfers
-- Input validation
+Highlights:
 
-## Architecture
+- **ReentrancyGuard** on state-changing functions
+- **Pausable** for emergency stop
+- **Ownable** for admin-only functions
+- **SafeERC20** for token transfers
+- Input validation and checks-effects-interactions
 
-See [docs/architecture.md](./docs/architecture.md) for detailed architecture documentation.
+**Disclaimer:** This is testnet-oriented. For mainnet, get a professional audit and use a multi-sig for the owner.
+
+---
+
+## Architecture & Docs
+
+- [docs/architecture.md](./docs/architecture.md) — system design, reward formula, data flow
+- [docs/security.md](./docs/security.md) — security model and recommendations
+- [docs/token-distribution.md](./docs/token-distribution.md) — initial distribution and customization
+- [DEPLOYMENT_NOTES.md](./DEPLOYMENT_NOTES.md) — deployment checklist and troubleshooting
+
+---
 
 ## Troubleshooting
 
-### "Insufficient funds" error
-- Ensure your deployer wallet has Sepolia ETH
-- Check gas prices on [ETH Gas Station](https://ethgasstation.info/)
+| Issue | What to check |
+|-------|----------------|
+| **Insufficient funds** | Deployer has Sepolia ETH; check gas price. |
+| **Frontend can’t see contracts** | Correct `NEXT_PUBLIC_CONTRACT_ADDRESSES` (valid JSON), correct RPC, browser console. |
+| **Tests fail** | Run `npm run compile`, reinstall deps, check Hardhat config. |
+| **Verification fails** | Wait 30–60 s after deploy; constructor args must match exactly; valid Etherscan API key. |
 
-### Frontend can't connect to contracts
-- Verify `NEXT_PUBLIC_CONTRACT_ADDRESSES` is correctly formatted JSON
-- Ensure RPC URL is correct and accessible
-- Check browser console for errors
-
-### Tests failing
-- Run `npm run compile` first
-- Ensure all dependencies are installed
-- Check Hardhat network configuration
-
-### Contract verification fails
-- Wait 30-60 seconds after deployment before verifying
-- Ensure constructor arguments match exactly
-- Check Etherscan API key is valid
+---
 
 ## Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests for new functionality
-5. Ensure all tests pass and coverage ≥90%
-6. Submit a pull request
+1. Fork the repository.
+2. Create a feature branch.
+3. Make changes and add tests for new behavior.
+4. Ensure tests pass and coverage stays ≥90%.
+5. Open a pull request.
+
+---
 
 ## License
 
 MIT
 
+---
+
 ## Support
 
-For issues or questions:
-- Open an issue on GitHub
-- Check documentation in `docs/` folder
-- Review test files for usage examples
-
-## Next Steps
-
-Recommended improvements:
-1. Add timelock for admin functions
-2. Implement multi-sig for owner
-3. Add reward rate limits
-4. Create migration script for contract upgrades
-5. Add frontend error handling improvements
-6. Implement reward history tracking
+- **Author**: KuchikiRenji — [KuchikiRenji@outlook.com](mailto:KuchikiRenji@outlook.com), [GitHub](https://github.com/KuchikiRenji), Discord: `kuchiki_renji`
+- Open an issue on GitHub for bugs or feature requests.
+- See the `docs/` folder and test files for usage examples.
 
 ---
 
-**⚠️ Disclaimer**: This is a testnet deployment. For mainnet, conduct a professional security audit and use multi-sig wallets.
-
+**Keywords:** Ethereum staking, DeFi staking vault, YARO token, rYARO rewards, Solidity staking contract, Hardhat, ERC-20 staking, Yaroslav Staking Vault, blockchain staking, Sepolia testnet.
